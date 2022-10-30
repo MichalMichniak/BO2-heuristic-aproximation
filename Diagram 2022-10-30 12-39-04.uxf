@@ -1,0 +1,57 @@
+<diagram program="umletino" version="15.0.0"><zoom_level>10</zoom_level><element><id>UMLClass</id><coordinates><x>20</x><y>158</y><w>290</w><h>140</h></coordinates><panel_attributes>&lt;&lt;Class&gt;&gt;
+Instance:Instance
+--
+-function_vect: List[List[UInt]]
+--
++init(t_max:float ,N:Uint, architecture: List[Uint], lut : LUT)
++copy(other :Istance)
++set_func_vect(func_v: List[List[Func]])
++get_func_vect(): List[List[Func]]
++get_output(x:List[float]):float
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>470</x><y>358</y><w>210</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Interface&gt;&gt;
+Func:Func 
+--
+/+init()/
+/+set_time()/
+/+set_func()/
+/+set_params()/
+/+get_output()/
+/+get_params()/
+/+get_time()/</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>340</x><y>628</y><w>210</w><h>200</h></coordinates><panel_attributes>&lt;&lt;Class&gt;&gt;
+Func_f:Func_f
+--
++function: lambda x: f(x)
++param: List[UInt]
++t : float 
+--
++init(t:float)
++set_time(t:float)
++set_funct(func: [lambda x])
++set_params(k:UInt)
++get_output(x : float): float
++get_params(): List[UInt]
++get_time() : float</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>650</x><y>628</y><w>210</w><h>200</h></coordinates><panel_attributes>&lt;&lt;Class&gt;&gt;
+Func_g:Func_g
+--
++function: lambda x,y: f(x,y)
++param: List[UInt]
++t : float
+--
++init(t:float)
++set_time(t:float)
++set_funct(func: [lambda x])
++set_params(k:UInt, l:UInt)
++get_output(x : float, y:float): float
++get_params(): List[UInt]
++get_time() : float</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>360</x><y>458</y><w>130</w><h>50</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=1
+m2=1..n</panel_attributes><additional_attributes>10;10;110;20</additional_attributes></element><element><id>Relation</id><coordinates><x>270</x><y>648</y><w>90</w><h>60</h></coordinates><panel_attributes>lt=&lt;..</panel_attributes><additional_attributes>70;40;10;10</additional_attributes></element><element><id>UMLNote</id><coordinates><x>110</x><y>648</y><w>170</w><h>30</h></coordinates><panel_attributes>param - list with one value
+bg=blue</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLNote</id><coordinates><x>920</x><y>668</y><w>170</w><h>30</h></coordinates><panel_attributes>param - list with two values
+bg=blue</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>850</x><y>668</y><w>90</w><h>40</h></coordinates><panel_attributes>lt=&lt;..</panel_attributes><additional_attributes>10;20;70;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>90</x><y>388</y><w>280</w><h>110</h></coordinates><panel_attributes>&lt;&lt;Class&gt;&gt;
+LUT:LUT
+--
+-LUT : Dict[UInt:Func] {pairs of id and function}
+--
++init(lut:Dict[UInt:Func])
++get_output(id:Uint, param:List[float]):float
++add_funct(f:Func,id:Uint)</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>440</x><y>538</y><w>160</w><h>110</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;90;140;10</additional_attributes></element><element><id>Relation</id><coordinates><x>570</x><y>538</y><w>200</w><h>110</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>180;90;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>160</x><y>288</y><w>100</w><h>120</h></coordinates><panel_attributes>lt=&lt;-</panel_attributes><additional_attributes>80;100;10;10</additional_attributes></element></diagram>
