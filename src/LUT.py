@@ -14,7 +14,10 @@ class LUT:
             lut : Dict[int, Func] - initial mapping
         """
         self.lut_ = lut
-        self.index = max(lut.keys())+1
+        if len(lut.keys()) != 0:
+            self.index = max(lut.keys())+1
+        else:
+            self.index = 0
     
     def add_funct(self,f : Callable[[float,Optional[float]],float], time : float):
         """
