@@ -27,5 +27,7 @@ class LUT:
             f(0,0)
         except TypeError:
             self.lut_[self.index] = Func_f(f,time)
+            self.index +=1
             return
         self.lut_[self.index] = Func_g(f,time)
+        self.index +=1
