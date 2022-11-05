@@ -2,4 +2,5 @@ from src.LUT import LUT
 from src.Instance import Instance
 
 class ASC:
-    pass
+    def __init__(self)->None:
+        pass

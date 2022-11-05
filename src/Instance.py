@@ -17,3 +17,5 @@ class Instance:
         self.architecture = architecture
         self.t_max = t_max
         self.N = N
+
+    def 
