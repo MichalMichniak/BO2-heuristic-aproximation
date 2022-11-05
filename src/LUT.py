@@ -1,13 +1,28 @@
-from typing import Callable,List,Dict,Union
+from typing import Callable,List,Dict,Union,Optional
 from src.Func_f import Func_f
 from src.Func_g import Func_g
-
+from src.Func import Func
 class LUT:
-    def __init__(self, lut : Dict[int, Union[Callable[[float,float],float],Callable[[float],float]]]= {}):
+    """
+    Look up table
+
+    index -> function
+    """
+    def __init__(self, lut : Dict[int, Func]= {}):
+        """
+        args:
+            lut : Dict[int, Func] - initial mapping
+        """
         self.lut_ = lut
         self.index = max(lut.keys())+1
     
-    def add_funct(self,f : Callable[[float,float],float], time):
+    def add_funct(self,f : Callable[[float,Optional[float]],float], time : float):
+        """
+        add function to look up table
+        args:
+            f : Callable[[float,Optional[float]],float] - function to add
+            time : float - propagation time of that function
+        """
         try:
             f(0,0)
         except TypeError:
