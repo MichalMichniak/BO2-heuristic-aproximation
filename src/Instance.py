@@ -12,10 +12,14 @@ class Instance:
             architecture : List[int] - list of numbers of functions in each layer
             lut : LUT - look up table, dictionary which is mapping indexes -> functions
         """
-        self.funct_vect : List[List[Tuple(int)]] = [[]]
+        self.funct_vect : List[List[Tuple[int]]] = [[]]
         self.lut : LUT = lut
         self.architecture = architecture
         self.t_max = t_max
         self.N = N
 
-    def 
+    def set_funct_vect(self, funct_vect : List[List[Tuple[int]]])->None:
+        self.funct_vect = funct_vect
+
+    def get_funct_vect(self)->List[List[Tuple[int]]]:
+        return self.funct_vect
