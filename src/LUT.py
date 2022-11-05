@@ -21,6 +21,7 @@ class LUT:
             self.index = 0
         id_func = lambda x: x
         self.add_funct(id_func, 0)
+        self.id_func_idx = self.index-1
 
     
     def add_funct(self,f : Callable[[float,Optional[float]],float], time : float):
