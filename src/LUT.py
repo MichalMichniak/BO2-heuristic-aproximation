@@ -8,6 +8,7 @@ class LUT:
 
     index -> function
     """
+
     def __init__(self, lut : Dict[int, Func]= {}):
         """
         args:
@@ -18,6 +19,9 @@ class LUT:
             self.index = max(lut.keys())+1
         else:
             self.index = 0
+        id_func = lambda x: x
+        self.add_funct(id_func, 0)
+
     
     def add_funct(self,f : Callable[[float,Optional[float]],float], time : float):
         """
