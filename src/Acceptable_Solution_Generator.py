@@ -70,7 +70,7 @@ class ASC:
                     n = self.binary_search(self.t_max - t)
                     r = random.randint(0,n)
                     if self.dict_idx_t[r][2] == 1:
-                        first_arg = random.randint(0,self.architecture[i-1]-1)
+                        first_arg = random.randint(0,self.N-1)
                         funct_vect[i][j]=(self.dict_idx_t[r][0],first_arg)
                     elif self.dict_idx_t[r][2] == 2:
                         first_arg = random.randint(0,self.N-1)
