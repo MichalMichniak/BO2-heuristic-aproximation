@@ -5,6 +5,16 @@ import random
 
 class ASC:
     def __init__(self,lut : LUT, t_max : float, N : int, architecture : List[int])->None:
+        """
+        Generator of acceptable solutions initialisation. Each generated function has given architecture
+        and its propagation time do not exceed t_max
+
+        args:
+            lut : LUT - look up table mapping index -> function
+            t_max : float - maximal propagation time of generated functions
+            N : int - number of function inputs
+            architecture : List[int] - given architecture
+        """
         if min(architecture) <=0:
             raise ValueError("number of functions in layer can't be negative or zero")
         self.lut = lut
@@ -19,6 +29,15 @@ class ASC:
         pass
 
     def binary_search(self,t,a=0,b=None):
+        """
+        binary search for place in self.dict_idx_t of the bigest propagation time
+        that is less or equal given time t.
+
+        args:
+            t : float - upper boundary of searched value
+            a : beggining search index
+            b : end search index
+        """
         if b == None:
             b = self.dict_idx_len
         if b-a == 2:
@@ -41,6 +60,12 @@ class ASC:
             return self.binary_search(t,(a+b)//2,b)
 
     def generate_instance(self)->Instance:
+        """
+        generate random instance that is acceptable by the restrictions
+
+        return:
+            instance : Instance - generated instance
+        """
         funct_vect = [[None for j in range(i)] for i in self.architecture]
         funct_vect_temp = [[[] for j in range(i)] for i in self.architecture]
         for i in list(range(len(self.architecture)))[::-1]:
@@ -101,6 +126,14 @@ class ASC:
         return new_instance
 
 def check_if_acceptable(inst : Instance)->bool:
+    """
+    Test for checking if instance is acceptable by cryterium of maximum propagation time
+
+    args:
+        inst : Instance
+    return: 
+        bool
+    """
     inst_vect = inst.get_funct_vect()
     inst_vect_t = [[None for j in i] for i in inst_vect]
     for j in range(len(inst_vect[0])):
