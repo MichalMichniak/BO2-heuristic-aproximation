@@ -15,8 +15,8 @@ if __name__ == '__main__':
     lut.add_funct(f,5)
     lut.add_funct(f,1)
     asc = s.ASC(lut,30,2,[4,4,4,4,2,1])
-    for i in range(1000):
-        ista = asc.generate_instance()
-        print(s.check_if_acceptable(ista))
-    print(ista.get_funct_vect())
+    ista = asc.generate_instance()
+    ista = s.prune(ista)
+    for i in ista:
+        print(i)
     pass

@@ -1,6 +1,6 @@
 from src.LUT import LUT
 from src.Instance import Instance
-from typing import List
+from typing import List, Tuple,Union
 import random
 
 class ASC:
@@ -149,3 +149,28 @@ def check_if_acceptable(inst : Instance)->bool:
                     t_prev_max = inst_vect_t[i-1][k]
             inst_vect_t[i][j] = t_prev_max + t_func
     return inst_vect_t[-1][0] <= inst.t_max
+
+def prune(inst = Union[Instance,List[List[Tuple[int]]]])->List[List[Tuple[int]]]:
+    """
+    pruning redundancy of a function
+
+    args:
+        inst : Union[Instance,List[List[Tuple[int]]]] - function to prune
+    return:
+        List[List[Tuple[int]]]
+    """
+    if type(inst) == Instance:
+        temp = inst.get_funct_vect().copy()
+    else:
+        temp = inst.copy()
+    temp2 = [[False for j in i] for i in temp]
+    for i in range(len(temp)-1,0,-1):
+        for j in range(len(temp[i])):
+            if temp[i][j] != None:
+                for k in temp[i][j][1:]:
+                    temp2[i-1][k] = True
+        for j in range(len(temp[i-1])):
+            if not temp2[i-1][j]:
+                temp[i-1][j] = None
+    return temp
+
