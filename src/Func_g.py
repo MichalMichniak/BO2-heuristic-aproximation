@@ -12,4 +12,4 @@ class Func_g(Func):
             t : float - propagation time
         """
         super().__init__(time,2)
-        g_ : Callable[[float,float],float] = g
+        self.g_ : Callable[[float,float],float] = g
