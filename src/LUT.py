@@ -23,7 +23,15 @@ class LUT:
         self.add_funct(id_func, 0)
         self.id_func_idx = self.index-1
 
-    
+    def __getitem__(self,idx:int):
+        """
+        get function with given index idx
+        """
+        try:
+            return self.lut_[idx]
+        except:
+            raise ValueError("no such a key in dictionary")
+
     def add_funct(self,f : Callable[[float,Optional[float]],float], time : float):
         """
         add function to look up table
