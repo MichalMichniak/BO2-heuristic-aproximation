@@ -1,7 +1,7 @@
 from typing import Callable, List, Tuple, Dict
-from Func import Func
-from Func_f import Func_f
-from Func_g import Func_g
+from src.Func import Func
+from src.Func_f import Func_f
+from src.Func_g import Func_g
 
 
 class Objective_Function:
@@ -33,10 +33,8 @@ class Objective_Function:
                     if len(c_func) == 3:
                         current_layer_values[j] = self.lut[c_func[0]].g_(last_layer_values[c_func[1]],
                                                                          last_layer_values[c_func[2]])
-            print(current_layer_values)
             last_layer_values = current_layer_values
             current_layer_ind += 1
-
         vv = None
         for v in last_layer_values:
             if v is not None:
@@ -44,10 +42,7 @@ class Objective_Function:
                 break
         if vv is None:
             raise Exception("cos nie dziala, same nony w ostatniej warstwie")
-        print(argument)
-        print(desired_function(argument))
-        print(vv)
-        return self.metryka(vv, desired_function(argument))
+        return self.metryka(vv, desired_function(*argument))
 
     def calculate_for_all(self, dimension: int, steps: int, desired_function: Callable[[List[float]], float]):
         """
@@ -79,17 +74,17 @@ def generate_N_space(N: int, steps) -> List[List[float]]:
     '''
     points = []
     if N == 1:
-        points = [-5 + 10 / steps * i for i in range(steps)]
+        points = [-5 + 10 / (steps-1) * i for i in range(steps)]
     if N == 2:
-        points = [[-5 + 10 / steps * i, -5 + 10 / steps * j] for i in range(steps) for j in range(steps)]
+        points = [[-5 + 10 / (steps-1) * i, -5 + 10 / (steps-1) * j] for i in range(steps) for j in range(steps)]
     if N == 3:
-        points = [[-5 + 10 / steps * i, -5 + 10 / steps * j, -5 + 10 / steps * k] for i in range(steps) for j in
+        points = [[-5 + 10 / (steps-1) * i, -5 + 10 / (steps-1) * j, -5 + 10 / (steps-1) * k] for i in range(steps) for j in
                   range(steps) for k in range(steps)]
     if N == 4:
-        points = [[-5 + 10 / steps * i, -5 + 10 / steps * j, -5 + 10 / steps * k, -5 + 10 / steps * m] for i in range(steps) for j in
+        points = [[-5 + 10 / (steps-1) * i, -5 + 10 / (steps-1) * j, -5 + 10 / (steps-1) * k, -5 + 10 / (steps-1) * m] for i in range(steps) for j in
                   range(steps) for k in range(steps) for m in range(steps)]
     if N == 5:
-        points = [[-5 + 10 / steps * i, -5 + 10 / steps * j, -5 + 10 / steps * k, -5 + 10 / steps * m, -5 + 10 / steps * n] for i in range(steps) for j in
+        points = [[-5 + 10 / (steps-1) * i, -5 + 10 / (steps-1) * j, -5 + 10 / (steps-1) * k, -5 + 10 / (steps-1) * m, -5 + 10 / (steps-1) * n] for i in range(steps) for j in
                   range(steps) for k in range(steps)  for m in range(steps) for n in range(steps)]
     return points
 
