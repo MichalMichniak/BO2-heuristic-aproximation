@@ -23,8 +23,13 @@ if __name__ == '__main__':
     of = l.Objective_Function(deepcopy(ista.get_funct_vect()),lut,metric)
     try:
         print("start")
-        print(of.calculate_for_all(asc.N,100,lambda x,y,z: 0))
-        print(counter.count_criterial_funct(ista.get_funct_vect(), lambda x,y,z: 0))
+        for i in range(1):
+            counter.count_criterial_funct(ista.get_funct_vect(), lambda x,y,z: 0)
+        print("end1")
+        for i in range(1):
+            of.calculate_for_all(asc.N,100,lambda x,y,z: 0)
+        print("end2")
+        
         
         
     except:
