@@ -15,7 +15,7 @@ if __name__ == '__main__':
     lut.add_funct(f,2)
     lut.add_funct(f,5)
     lut.add_funct(f,1)
-    asc = s.ASC(lut,30,3,[4,4,4,4,2,1])
+    asc = s.ASC(lut,140,3,[16,16,16,8,4,2,1])
     
     counter = c.Criterial_Funct_Counter(asc.architecture,asc.N,lut,nr_of_samplings_in_row=100)
     ista = asc.generate_instance()
@@ -23,10 +23,10 @@ if __name__ == '__main__':
     of = l.Objective_Function(deepcopy(ista.get_funct_vect()),lut,metric)
     try:
         print("start")
-        for i in range(1):
+        for i in range(2):
             counter.count_criterial_funct(ista.get_funct_vect(), lambda x,y,z: 0)
         print("end1")
-        for i in range(1):
+        for i in range(2):
             of.calculate_for_all(asc.N,100,lambda x,y,z: 0)
         print("end2")
         
