@@ -52,7 +52,7 @@ def main_process(process_number = 3, instance_count = 100):
     for i in range(process_number):
         proc_lst[i].run()
     index = (i for i in range(100000))
-    for j in range(100):
+    for j in range(1000):
         if instance_count == 0:
                 break
         for i in range(process_number):
