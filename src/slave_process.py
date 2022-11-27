@@ -40,7 +40,8 @@ def slave_process(conn,buffor,architecture,N,nr_of_samplings_in_row=100, process
             # buffor.put(msg)
             func_vect, id = buffor.get()
             if type(func_vect) == str:
-                break
+                conn.send("end")
+                continue
             t = counter.count_criterial_funct(func_vect, approx_func)
             print("finished")
             conn.send([t,id])

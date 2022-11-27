@@ -11,35 +11,62 @@ import threading
 import queue
 import time
 import multiprocessing as m
+class Count:
+    """
+    glogal counter of finished processes
+    """
+    def __init__(self,initial_value = 0) -> None:
+        self.initial_value =initial_value
+        
 
-def print_conn(conn,global_queue : queue.Queue):
+def print_conn(conn,global_queue : queue.Queue,count_lock : threading.Lock,global_count:Count):
+    """
+    function counter process interface
+    every result is saved in global_queue as [criterial function value , index of instance]
+    """
     while True:
         t = conn.recv()
-        global_queue.put(t)
+        if type(t) == str:
+            with count_lock:
+                global_count.initial_value +=1
+                print(global_count.initial_value)
+        else:
+            global_queue.put(t)
         print(f"{t}")
 
 class Process_Package:
-    def __init__(self,global_queue : queue.Queue,architecture,N):
+    """
+    class managing one process of criterial function count
+    """
+    def __init__(self,global_queue : queue.Queue,architecture,N,count_lock : threading.Lock,global_count:Count):
         self.conn1,self.conn2 = m.Pipe()
-        self.thrr = threading.Thread(target=print_conn, args=[self.conn2,global_queue])
+        self.thrr = threading.Thread(target=print_conn, args=[self.conn2,global_queue,count_lock,global_count])
         self.buffor = m.Queue()
-        self.p = m.Process(target=slave_process, args=(self.conn1,self.buffor,architecture,N),kwargs={"nr_of_samplings_in_row":20,"process_id":1})
+        self.p = m.Process(target=slave_process, args=(self.conn1,self.buffor,architecture,N),kwargs={"nr_of_samplings_in_row":10,"process_id":1})
         pass
 
     def run(self):
+        """
+        start of the process
+        """
         self.thrr.start()
         self.p.start()
         pass
 
     def put(self, instance):
+        """
+        add instance to compute criterial function
+        every instance consist of [encoded function, index of instance]
+        """
         self.buffor.put(instance)
 
 
 
 def main_process(process_number = 3, instance_count = 100):
     funcs = function_definisions.get_funct()
-    approx_func = function_definisions.get_approx_funct()
+    # approx_func = function_definisions.get_approx_funct()
     lut = LUT()
+    
     for i in funcs:
         lut.add_funct(*i)
     asc = ASC(lut,140,2,[16,16,16,16,8,4,2,1])
@@ -47,8 +74,10 @@ def main_process(process_number = 3, instance_count = 100):
     proc_lst = []
     maping_dict = {}
     ista = asc.generate_instance()
+    count_lock = threading.Lock()
+    global_count = Count()
     for i in range(process_number):
-        proc_lst.append(Process_Package(global_queue, asc.architecture,asc.N))
+        proc_lst.append(Process_Package(global_queue, asc.architecture,asc.N,count_lock,global_count))
     for i in range(process_number):
         proc_lst[i].run()
     index = (i for i in range(100000))
@@ -63,8 +92,9 @@ def main_process(process_number = 3, instance_count = 100):
             temp_index = next(index)
             maping_dict[temp_index] = temp_index
             print(temp_index)
-            proc_lst[i].put([ista.get_funct_vect(),temp_index])
-            
+            proc_lst[i].put([ista.get_funct_vect(),temp_index])  
+    for i in range(len(proc_lst)):
+        proc_lst[i].put(["end",0])
     # for i in range(100):
     #     print(i)
     #     buffor.put([ista.get_funct_vect(),i])
