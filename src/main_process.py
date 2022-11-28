@@ -27,12 +27,17 @@ def print_conn(conn,global_queue : queue.Queue,count_lock : threading.Lock,globa
     while True:
         t = conn.recv()
         if type(t) == str:
-            with count_lock:
-                global_count.initial_value +=1
-                print(global_count.initial_value)
+            if t == "DISCONECT":
+                conn.close()
+                print(f"disconected processes : {t}")
+                break
+            else:
+                with count_lock:
+                    global_count.initial_value +=1
+                    print(f"finished processes : {global_count.initial_value}")
         else:
             global_queue.put(t)
-        print(f"{t}")
+        #print(f"{t}")
 
 class Process_Package:
     """
@@ -60,9 +65,26 @@ class Process_Package:
         """
         self.buffor.put(instance)
 
+def split_counting(lst_instance,proc_lst):
+    index = (i for i in range(100000))
+    for j in range(len(lst_instance)):
+        temp_index = next(index)
+        #print(temp_index)
+        proc_lst[j%len(proc_lst)].put([lst_instance[j].get_funct_vect(),temp_index])
+    for i in range(len(proc_lst)):
+        proc_lst[i].put(["end",0])
+
+def get_lst_from_queue_sort(global_queue : queue.Queue,lst_instance):
+    crit_idx_lst = []
+    while not global_queue.empty():
+        crit_idx_lst.append(global_queue.get())
+    crit_idx_lst.sort(key=lambda x:x[0])
+    lst = [lst_instance[j] for _,j in crit_idx_lst]
+    return lst
 
 
-def main_process(process_number = 3, instance_count = 100):
+
+def main_process(process_number = 3, instance_count = 100 , epoch = 3):
     funcs = function_definisions.get_funct()
     # approx_func = function_definisions.get_approx_funct()
     lut = LUT()
@@ -80,21 +102,30 @@ def main_process(process_number = 3, instance_count = 100):
         proc_lst.append(Process_Package(global_queue, asc.architecture,asc.N,count_lock,global_count))
     for i in range(process_number):
         proc_lst[i].run()
-    index = (i for i in range(100000))
-    for j in range(1000):
-        if instance_count == 0:
-                break
-        for i in range(process_number):
-            if instance_count == 0:
-                break
-            instance_count -=1
-            ista = asc.generate_instance()
-            temp_index = next(index)
-            maping_dict[temp_index] = temp_index
-            print(temp_index)
-            proc_lst[i].put([ista.get_funct_vect(),temp_index])  
-    for i in range(len(proc_lst)):
-        proc_lst[i].put(["end",0])
+    lst_instance = [asc.generate_instance() for i in range(instance_count)]
+    split_counting(lst_instance,proc_lst)
+
+    for i in range(epoch):
+        print(f"Epoch : {i}")
+        while global_count.initial_value != process_number:
+            time.sleep(0.1)
+        else:
+            global_count.initial_value = 0
+        lst_instance = get_lst_from_queue_sort(global_queue,lst_instance)
+        # print(lst_instance)
+        if i < epoch - 1:
+            ##################################################
+            """
+            operacje genetyczne na populacji lst_instance
+            TU PISAĆ KOD
+
+            """
+            lst_instance = lst_instance
+
+
+            ##################################################
+            split_counting(lst_instance,proc_lst)
+        
     # for i in range(100):
     #     print(i)
     #     buffor.put([ista.get_funct_vect(),i])
@@ -104,5 +135,10 @@ def main_process(process_number = 3, instance_count = 100):
     
     # time.sleep(100)
     # buffor.put([function_definisions.DISCONNECT_MSG, 0])
+    print("######DISCONECTING AND JOINING STAGE##############")
+    for i in proc_lst:
+        i.put(["DISCONECT",0])
+        i.p.join()
+    
     pass
 

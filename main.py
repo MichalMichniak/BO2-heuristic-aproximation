@@ -7,7 +7,7 @@ import src.main_process as m
 
 
 if __name__ == '__main__':
-    m.main_process(4,40)
+    m.main_process(4,20)
     
     """ Pawel jak nie wierzysz w multiprocesing to to pod spodem robi to samo co na gorze"""
     # funcs = s.get_funct()
