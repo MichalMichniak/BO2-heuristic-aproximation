@@ -11,6 +11,10 @@ import threading
 import queue
 import time
 import multiprocessing as m
+import numpy as np
+import itertools
+from typing import List
+
 class Count:
     """
     glogal counter of finished processes
@@ -65,16 +69,24 @@ class Process_Package:
         """
         self.buffor.put(instance)
 
-def split_counting(lst_instance,proc_lst):
-    index = (i for i in range(100000))
+def split_counting(lst_instance : List,proc_lst : List[Process_Package]):
+    """
+    function that splits counting to different processes
+    argv:
+        lst_instance : List[Instance] - list of instances to count
+        proc_lst : List[Process_Package] - list of counting proceses
+    """
+    index = (i for i in itertools.count(start=0))
     for j in range(len(lst_instance)):
         temp_index = next(index)
-        #print(temp_index)
         proc_lst[j%len(proc_lst)].put([lst_instance[j].get_funct_vect(),temp_index])
     for i in range(len(proc_lst)):
         proc_lst[i].put(["end",0])
 
-def get_lst_from_queue_sort(global_queue : queue.Queue,lst_instance):
+def get_lst_from_queue_sort(global_queue : queue.Queue,lst_instance : List):
+    """
+    return the multithreading queue content in sorted list
+    """
     crit_idx_lst = []
     while not global_queue.empty():
         crit_idx_lst.append(global_queue.get())
@@ -85,13 +97,15 @@ def get_lst_from_queue_sort(global_queue : queue.Queue,lst_instance):
 
 
 def main_process(process_number = 3, instance_count = 100 , epoch = 3):
+    """
+    main function that control subprocesses and contain main program loop
+    """
     funcs = function_definisions.get_funct()
-    # approx_func = function_definisions.get_approx_funct()
     lut = LUT()
     
     for i in funcs:
         lut.add_funct(*i)
-    asc = ASC(lut,140,2,[16,16,16,16,8,4,2,1])
+    asc = ASC(lut,140,2,[8,6,4,2,1])
     global_queue = queue.Queue()
     proc_lst = []
     maping_dict = {}
