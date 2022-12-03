@@ -43,5 +43,11 @@ class Instance:
             funct_vect : List[List[Tuple[int]]] - function vector
         """
         return self.funct_vect
+    
+    def __repr__(self):
+        strr = ""
+        for i in self.get_funct_vect():
+            strr += f"{i}\n"
+        return strr
 
 

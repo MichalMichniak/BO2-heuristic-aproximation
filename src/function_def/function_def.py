@@ -35,4 +35,4 @@ def get_metric():
     return lambda x,y: (x-y)**2
 
 def get_approx_funct():
-    return lambda x,y: 0
+    return lambda x,y: 5*np.sin(0.1*x)*np.cos(0.1*y)

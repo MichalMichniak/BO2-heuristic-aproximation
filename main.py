@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 if __name__ == '__main__':
-    m.main_process(20,500)
+    m.main_process(50,100,100)
     
     """ Pawel jak nie wierzysz w multiprocesing to to pod spodem robi to samo co na gorze"""
     pass
