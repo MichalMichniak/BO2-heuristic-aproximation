@@ -1,7 +1,7 @@
 import numpy as np
 DISCONNECT_MSG = "DISCONECT"
 from typing import List
-from copy import deepcopy
+
 def bound_decorator(func, X : List[float] = [-5,5]):
     def bounded_func(*args,**kwargs):
         x = func(*args,**kwargs)
