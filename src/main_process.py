@@ -1,3 +1,5 @@
+import src.gui
+
 if __name__ == '__main__':
     import function_def.function_def as function_definisions
 else:
@@ -14,7 +16,7 @@ import multiprocessing as m
 import numpy as np
 import itertools
 from typing import List
-
+from src.gui import global_y, global_progress, global_rdy_flag, global_arg, global_exit
 class Count:
     """
     glogal counter of finished processes
@@ -92,12 +94,13 @@ def get_lst_from_queue_sort(global_queue : queue.Queue,lst_instance : List):
         crit_idx_lst.append(global_queue.get())
     crit_idx_lst.sort(key=lambda x:x[0])
     print(crit_idx_lst[:1])
+    last = crit_idx_lst[:1]
     lst = [lst_instance[j] for _,j in crit_idx_lst]
-    return lst
+    return lst, last
 
 
 
-def main_process(process_number = 3, instance_count = 100 , max_iteration = 4):
+def main_process(process_number = 3, instance_count = 100, max_iteration = 4):
     """
     main function that control subprocesses and contain main program loop
     """
@@ -108,53 +111,70 @@ def main_process(process_number = 3, instance_count = 100 , max_iteration = 4):
         lut.add_funct(*i)
     asc = ASC(lut,140,2,[8,6,4,2,1])
     global_queue = queue.Queue()
-    proc_lst = []
-    # maping_dict = {}
-    # ista = asc.generate_instance()
-    g = GeneticOperations(asc)
-    count_lock = threading.Lock()
-    global_count = Count()
-    for i in range(process_number):
-        proc_lst.append(Process_Package(global_queue, asc.architecture,asc.N,count_lock,global_count))
-    for i in range(process_number):
-        proc_lst[i].run()
-    lst_instance = [asc.generate_instance() for i in range(instance_count)]
-    split_counting(lst_instance,proc_lst)
+    #gui = src.gui.GUI([[i for i in range(instance_count)],[0 for i in range(instance_count)]])
+    #gui.run()
+    global_arg[:] = [process_number, instance_count, max_iteration]
+    gui_process = threading.Thread(target=src.gui.start)
+    gui_process.start()
+    while 1:
+        while not global_rdy_flag[0]:
+            process_number = global_arg[0]
+            instance_count = global_arg[1]
+            max_iteration = global_arg[2]
+            time.sleep(0.100)
+            pass
+        global_y[:] = []
+        proc_lst = []
+        # maping_dict = {}
+        # ista = asc.generate_instance()
+        g = GeneticOperations(asc)
+        count_lock = threading.Lock()
+        global_count = Count()
+        for i in range(process_number):
+            proc_lst.append(Process_Package(global_queue, asc.architecture,asc.N,count_lock,global_count))
+        for i in range(process_number):
+            proc_lst[i].run()
+        lst_instance = [asc.generate_instance() for i in range(instance_count)]
+        split_counting(lst_instance,proc_lst)
 
-    for i in range(max_iteration):
-        print(f"iteration : {i}")
-        while global_count.initial_value != process_number:
-            time.sleep(0.1)
-        else:
-            global_count.initial_value = 0
-        lst_instance = get_lst_from_queue_sort(global_queue,lst_instance)
-        # print(lst_instance)
-        if i < max_iteration - 1:
-            ##################################################
-            """
-            operacje genetyczne na populacji lst_instance
-            TU PISAĆ KOD
-
-            """
-            lst_instance = g.gen_oper_over_lst(lst_instance)
-
-
-            ##################################################
-            split_counting(lst_instance,proc_lst)
-        
-    # for i in range(100):
-    #     print(i)
-    #     buffor.put([ista.get_funct_vect(),i])
-    #     buffor.put([ista.get_funct_vect(),i])
-    #     buffor.put([ista.get_funct_vect(),i])
-    # print("bbb")
+        for i in range(max_iteration):
+            print(f"iteration : {i}")
+            while global_count.initial_value != process_number:
+                time.sleep(0.1)
+            else:
+                global_count.initial_value = 0
+            lst_instance, last = get_lst_from_queue_sort(global_queue, lst_instance)
+            global_y.append(last[0][0])
+            global_progress[0] = int(i/max_iteration*100 + 1)
+            #gui.plot_data.data_y[i] = last[0][0];
+            # print(lst_instance)
+            if i < max_iteration - 1:
+                ##################################################
+                """
+                operacje genetyczne na populacji lst_instance
+                TU PISAĆ KOD
     
-    # time.sleep(100)
-    # buffor.put([function_definisions.DISCONNECT_MSG, 0])
-    print("######DISCONECTING AND JOINING STAGE##############")
-    for i in proc_lst:
-        i.put(["DISCONECT",0])
-        i.p.join()
-    
+                """
+                lst_instance = g.gen_oper_over_lst(lst_instance)
+
+
+                ##################################################
+                split_counting(lst_instance, proc_lst)
+
+        # for i in range(100):
+        #     print(i)
+        #     buffor.put([ista.get_funct_vect(),i])
+        #     buffor.put([ista.get_funct_vect(),i])
+        #     buffor.put([ista.get_funct_vect(),i])
+        # print("bbb")
+
+        # time.sleep(100)
+        # buffor.put([function_definisions.DISCONNECT_MSG, 0])
+        print("######DISCONECTING AND JOINING STAGE##############")
+        for i in proc_lst:
+            i.put(["DISCONECT",0])
+            i.p.join()
+        global_rdy_flag[0] = 0
+
     pass
 
