@@ -23,7 +23,7 @@ class GeneticOperations:
         ins.set_funct_vect(func_vect)
         return ins
 
-    def gen_oper_over_lst(self,lst):
+    def gen_oper_over_lst(self,lst,*args):
         new_population : List[Instance] = []
         scale = 100
         crosing = 0.85

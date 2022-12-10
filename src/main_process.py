@@ -6,7 +6,7 @@ else:
     from src.nothing_is_here.criterial_function import Criterial_Funct_Counter
     from src.Acceptable_Solution_Generator import ASC
     from src.slave_process import slave_process
-    from src.genetic_operations.GeneticOperations import GeneticOperations
+    from src.genetic_operations.GeneticOperations_vol2 import GeneticOperations
 import threading
 import queue
 import time
@@ -91,9 +91,10 @@ def get_lst_from_queue_sort(global_queue : queue.Queue,lst_instance : List):
     while not global_queue.empty():
         crit_idx_lst.append(global_queue.get())
     crit_idx_lst.sort(key=lambda x:x[0])
-    print(crit_idx_lst[:1])
+    print(crit_idx_lst[:6])
     lst = [lst_instance[j] for _,j in crit_idx_lst]
-    return lst
+    lst_values = [j for j,_ in crit_idx_lst]
+    return lst,lst_values
 
 
 
@@ -127,7 +128,7 @@ def main_process(process_number = 3, instance_count = 100 , max_iteration = 4):
             time.sleep(0.1)
         else:
             global_count.initial_value = 0
-        lst_instance = get_lst_from_queue_sort(global_queue,lst_instance)
+        lst_instance,func_values = get_lst_from_queue_sort(global_queue,lst_instance)
         # print(lst_instance)
         if i < max_iteration - 1:
             ##################################################
@@ -136,7 +137,7 @@ def main_process(process_number = 3, instance_count = 100 , max_iteration = 4):
             TU PISAĆ KOD
 
             """
-            lst_instance = g.gen_oper_over_lst(lst_instance)
+            lst_instance = g.gen_oper_over_lst(lst_instance,func_values)
 
 
             ##################################################
