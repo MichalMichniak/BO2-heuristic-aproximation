@@ -95,7 +95,7 @@ def get_lst_from_queue_sort(global_queue : queue.Queue,lst_instance : List):
     while not global_queue.empty():
         crit_idx_lst.append(global_queue.get())
     crit_idx_lst.sort(key=lambda x:x[0])
-    print(crit_idx_lst[:6])
+    print(crit_idx_lst[:1])
     lst = [lst_instance[j] for _,j in crit_idx_lst]
     lst_values = [j for j,_ in crit_idx_lst]
     return lst,lst_values
@@ -134,10 +134,9 @@ def main_process(process_number = 3, instance_count = 100 , max_iteration = 4, c
         else:
             global_count.initial_value = 0
         lst_instance,func_values = get_lst_from_queue_sort(global_queue,lst_instance)
-        print(func_values)
         #nwm czy to to, ale tu apendujemy wartości wunkcji celu i updatujamy progress bara
         global_y.append(func_values[0])
-        print(global_y)
+        #print(global_y)
         global_progress[0] =int((i+1)/max_iteration * 100)
         # print(lst_instance)
         if i < max_iteration - 1:
@@ -168,7 +167,7 @@ def main_process(process_number = 3, instance_count = 100 , max_iteration = 4, c
         i.p.join()
     pass
 
-def main_process_gui(process_number = 3, instance_count = 100 , max_iteration = 4, crosing = 0.60, hard_mutation = 0.05, nearby_func_mutation = 0.20, arguments_mutation = 0.10):
+def main_process_gui(process_number = 3, instance_count = 100 , max_iteration = 4, crosing = 0.60, hard_mutation = 0.05, nearby_func_mutation = 0.20, arguments_mutation = 0.10, typeofsurviving = "roulette"):
     """
     main function that control subprocesses and contain main program loop
     """
@@ -217,10 +216,10 @@ def main_process_gui(process_number = 3, instance_count = 100 , max_iteration = 
             else:
                 global_count.initial_value = 0
             lst_instance, func_values = get_lst_from_queue_sort(global_queue, lst_instance)
-            print(func_values)
+            #print(func_values)
             # nwm czy to to, ale tu apendujemy wartości wunkcji celu i updatujamy progress bara
             global_y.append(func_values[0])
-            print(global_y)
+            #print(global_y)
             global_progress[0] = int((i + 1) / max_iteration * 100)
             # print(lst_instance)
             if i < max_iteration - 1:
@@ -231,7 +230,7 @@ def main_process_gui(process_number = 3, instance_count = 100 , max_iteration = 
 
                 """
                 lst_instance = g.gen_oper_over_lst(lst_instance, func_values, crosing, hard_mutation,
-                                                   nearby_func_mutation, arguments_mutation)
+                                                   nearby_func_mutation, arguments_mutation, typeofsurviving )
 
                 ##################################################
                 split_counting(lst_instance, proc_lst)

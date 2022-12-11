@@ -32,7 +32,7 @@ class GeneticOperations:
         ins.set_funct_vect(func_vect)
         return ins
 
-    def gen_oper_over_lst(self, lst, criterial:List[float], crosing = 0.60, hard_mutation = 0.05, nearby_func_mutation = 0.20, arguments_mutation = 0.10):
+    def gen_oper_over_lst(self, lst, criterial:List[float], crosing = 0.60, hard_mutation = 0.05, nearby_func_mutation = 0.20, arguments_mutation = 0.10, typeofsurviving = "roulette"):
         new_population : List[Instance] = []
         
         ### probability of roulette
@@ -57,9 +57,18 @@ class GeneticOperations:
             j = 0
             while idx1 == idx2:
                 j+=1
-                idx2 += np.random.randint(j,5+j)%len(criterial)
+                idx2 += np.random.randint(j,2+j)%len(criterial)
             new_population.append(self.cross(lst[idx1],lst[idx2]))
-        new_population.extend(lst[:rest])
+        if typeofsurviving == "roulette":
+            # roulette chosing:
+            survivors = []
+            for i in range(rest):
+                ### roulette generation
+                survivors.append(lst[get_idx_binary_search(np.random.uniform(),cumultative_distribute_func)%len(criterial)]) 
+            new_population.extend(survivors)
+        else:
+            # best chosing:
+            new_population.extend(lst[:rest])
 
         #Mutation operators
 
@@ -135,7 +144,7 @@ def get_idx_binary_search(value,dystrybuanta,a=0,b=None):
         b : end search index
     """
     if b == None:
-        b = len(dystrybuanta)
+        b = len(dystrybuanta)-1
     if b-a == 2:
         if dystrybuanta[b]<=value:
             return b
