@@ -113,7 +113,10 @@ class GeneticOperations:
                     new_fun_id += 1
                     random_prob -= self.similarity_matrix[old_func,new_fun_id]
                 new_param = [list(self.asc_.lut.lut_.keys())[new_fun_id]]
-                new_param.extend(list(new_population[i].funct_vect[row][col])[1:])
+                if self.asc_.lut.lut_[new_param[0]].n_param == 1:
+                    new_param.append(list(new_population[i].funct_vect[row][col])[1])
+                else:   
+                    new_param.extend(list(new_population[i].funct_vect[row][col])[1:])
                 if self.asc_.lut.lut_[new_param[0]].n_param == 2 and len(new_param) == 2:
                     if row == 0:
                         new_argument = randint(0,self.asc_.N-1)
