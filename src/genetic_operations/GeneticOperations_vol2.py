@@ -32,12 +32,9 @@ class GeneticOperations:
         ins.set_funct_vect(func_vect)
         return ins
 
-    def gen_oper_over_lst(self, lst, criterial:List[float]):
+    def gen_oper_over_lst(self, lst, criterial:List[float], crosing = 0.60, hard_mutation = 0.05, nearby_func_mutation = 0.20, arguments_mutation = 0.10):
         new_population : List[Instance] = []
-        crosing = 0.60
-        hard_mutation = 0.05
-        nearby_func_mutation = 0.20
-        arguments_mutation = 0.10
+        
         ### probability of roulette
         proportions = np.array(criterial,dtype = float) - criterial[-1]
         sum_of_proportions = np.sum(proportions)

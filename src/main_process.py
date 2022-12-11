@@ -98,7 +98,7 @@ def get_lst_from_queue_sort(global_queue : queue.Queue,lst_instance : List):
 
 
 
-def main_process(process_number = 3, instance_count = 100 , max_iteration = 4):
+def main_process(process_number = 3, instance_count = 100 , max_iteration = 4, crosing = 0.60, hard_mutation = 0.05, nearby_func_mutation = 0.20, arguments_mutation = 0.10):
     """
     main function that control subprocesses and contain main program loop
     """
@@ -137,7 +137,7 @@ def main_process(process_number = 3, instance_count = 100 , max_iteration = 4):
             TU PISAĆ KOD
 
             """
-            lst_instance = g.gen_oper_over_lst(lst_instance,func_values)
+            lst_instance = g.gen_oper_over_lst(lst_instance,func_values,crosing, hard_mutation, nearby_func_mutation, arguments_mutation)
 
 
             ##################################################
