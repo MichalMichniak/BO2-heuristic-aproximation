@@ -180,7 +180,7 @@ def main_process_gui(process_number = 3, instance_count = 100 , max_iteration = 
 
     # maping_dict = {}
     # ista = asc.generate_instance()
-    global_arg[:] = [crosing, hard_mutation, nearby_func_mutation]
+    global_arg[:] = [crosing, hard_mutation, nearby_func_mutation, arguments_mutation, instance_count, typeofsurviving]
     gui_process = threading.Thread(target=src.gui.start)
     gui_process.start()
     ## tu ustawiamy parametry algorytmu
@@ -192,10 +192,16 @@ def main_process_gui(process_number = 3, instance_count = 100 , max_iteration = 
             crosing = global_arg[0]
             hard_mutation = global_arg[1]
             nearby_func_mutation = global_arg[2]
+            arguments_mutation = global_arg[3]
+            max_iteration = global_arg[4]
+            typeofsurviving = global_arg[5]
             time.sleep(0.100)
         crosing = global_arg[0]
         hard_mutation = global_arg[1]
         nearby_func_mutation = global_arg[2]
+        arguments_mutation = global_arg[3]
+        max_iteration = global_arg[4]
+        typeofsurviving = global_arg[5]
         global_y[:] = []
         global_queue = queue.Queue()
         proc_lst = []

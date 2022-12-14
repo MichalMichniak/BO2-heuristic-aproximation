@@ -37,6 +37,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.add_edit1()
         self.add_edit2()
         self.add_edit3()
+        self.add_edit4()
+        self.add_edit5()
+        self.add_edit6()
         self.setLayout(self.layout)
         widget = QtWidgets.QWidget()
         widget.setLayout(self.layout)
@@ -47,6 +50,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.edit1_label.setText("crossing = " + str(global_arg[0]))
         self.edit2_label.setText("hard mutation = " + str(global_arg[1]))
         self.edit3_label.setText("nearby mutation = " + str(global_arg[2]))
+        self.edit4_label.setText("argument mutation = " + str(global_arg[3]))
+        self.edit5_label.setText("max iteration = " + str(global_arg[4]))
+        self.edit6_label.setText(str(global_arg[5]))
         self.progress_bar.setValue(global_progress[0])
         if len(global_y) > 0:
             self.label.setText("Wartość funkcji celu: \n" + "{:3.2f}".format(global_y[-1]))
@@ -63,13 +69,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.label = QtWidgets.QLabel("Wartość funkcji celu: \n ------")
         self.label.setFont(self.label.font())
         font = self.label.font()
-        font.setPointSize(30)
+        font.setPointSize(17)
         self.label.setFont(font)
-        self.layout.addWidget(self.label, 7, 0)
+        self.layout.addWidget(self.label, 7, 0,1,2)
 
     def add_progress_bar(self):
         self.progress_bar = QtWidgets.QProgressBar()
-        self.layout.addWidget(self.progress_bar, 9, 1)
+        self.layout.addWidget(self.progress_bar, 9, 2)
 
     def add_plot(self):
         self.graphWidget = pg.PlotWidget()
@@ -81,20 +87,24 @@ class MainWindow(QtWidgets.QMainWindow):
         self.timer.setInterval(200)
         self.timer.timeout.connect(self.update_plot_data)
         self.timer.start()
-        self.layout.addWidget(self.graphWidget, 0, 1, 8, 1)
+        self.layout.addWidget(self.graphWidget, 0, 2, 8, 1)
 
     def add_start(self):
         self.push_button = QtWidgets.QPushButton()
         self.push_button.setFont(QtGui.QFont("Times", 20))
         self.push_button.setText("Start")
         self.push_button.clicked.connect(self.start_butt)
-        self.layout.addWidget(self.push_button, 6, 0)
+        self.layout.addWidget(self.push_button, 6, 0, 1, 2)
 
     def start_butt(self):
         if not global_rdy_flag[0]:
             self.edit1_meth()
             self.edit2_meth()
             self.edit3_meth()
+            self.edit4_meth()
+            self.edit5_meth()
+            self.edit6_meth()
+
         global_rdy_flag[0] = 1
 
     def add_edit1(self):
@@ -120,7 +130,31 @@ class MainWindow(QtWidgets.QMainWindow):
         self.edit3.returnPressed.connect(self.edit3_meth)
         self.layout.addWidget(self.edit3_label, 4, 0)
         self.layout.addWidget(self.edit3, 5, 0)
+    def add_edit4(self):
+        self.edit4_label = QtWidgets.QLabel()
+        self.edit4_label.setText("argument mutation = " + str(global_arg[3]))
+        self.edit4 = QtWidgets.QLineEdit()
+        self.edit4.returnPressed.connect(self.edit4_meth)
+        self.layout.addWidget(self.edit4, 1, 1)
+        self.layout.addWidget(self.edit4_label, 0, 1)
 
+    def add_edit5(self):
+        self.edit5_label = QtWidgets.QLabel()
+        self.edit5_label.setText("max iteration = " + str(global_arg[4]))
+        self.edit5 = QtWidgets.QLineEdit()
+        self.edit5.returnPressed.connect(self.edit5_meth)
+        self.layout.addWidget(self.edit5, 3, 1)
+        self.layout.addWidget(self.edit5_label, 2, 1)
+
+    def add_edit6(self):
+        self.edit6_label = QtWidgets.QLabel()
+        self.edit6_label.setText("PLACEHOLDER")
+        self.edit6 = QtWidgets.QComboBox()
+        self.edit6.addItem("roulette")
+        self.edit6.addItem("else")
+        self.edit6.activated.connect(self.edit6_meth)
+        self.layout.addWidget(self.edit6_label, 4, 1)
+        self.layout.addWidget(self.edit6, 5, 1)
 
     def edit1_meth(self):
         if not global_rdy_flag[0]:
@@ -136,6 +170,19 @@ class MainWindow(QtWidgets.QMainWindow):
         if not global_rdy_flag[0]:
             if len(self.edit3.text()) > 0:
                 global_arg[2] = float(self.edit3.text())
+    def edit4_meth(self):
+        if not global_rdy_flag[0]:
+            if len(self.edit4.text()) > 0:
+                global_arg[3] = float(self.edit4.text())
+
+    def edit5_meth(self):
+        if not global_rdy_flag[0]:
+            if len(self.edit5.text()) > 0:
+                global_arg[4] = int(self.edit5.text())
+
+    def edit6_meth(self):
+        if not global_rdy_flag[0]:
+            global_arg[5] = self.edit6.currentText()
 
     def set_main_widget(self):
         pass
