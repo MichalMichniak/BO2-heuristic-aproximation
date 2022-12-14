@@ -167,7 +167,7 @@ def main_process(process_number = 3, instance_count = 100 , max_iteration = 4, c
         i.p.join()
     pass
 
-def main_process_gui(process_number = 3, instance_count = 100 , max_iteration = 4, crosing = 0.60, hard_mutation = 0.05, nearby_func_mutation = 0.20, arguments_mutation = 0.10, typeofsurviving = "roulette"):
+def main_process_gui(process_number = 3, instance_count = 100 , max_iteration = 4, crosing = 0.60, hard_mutation = 0.05, nearby_func_mutation = 0.20, arguments_mutation = 0.10, typeofsurviving = "fine"):
     """
     main function that control subprocesses and contain main program loop
     """
@@ -180,7 +180,7 @@ def main_process_gui(process_number = 3, instance_count = 100 , max_iteration = 
 
     # maping_dict = {}
     # ista = asc.generate_instance()
-    global_arg[:] = [process_number, instance_count, max_iteration]
+    global_arg[:] = [crosing, hard_mutation, nearby_func_mutation]
     gui_process = threading.Thread(target=src.gui.start)
     gui_process.start()
     ## tu ustawiamy parametry algorytmu
@@ -189,13 +189,13 @@ def main_process_gui(process_number = 3, instance_count = 100 , max_iteration = 
             """
             tutaj zmieniane beda parametry algorytmu
             """
-            process_number = global_arg[0]
-            instance_count = global_arg[1]
-            max_iteration = global_arg[2]
+            crosing = global_arg[0]
+            hard_mutation = global_arg[1]
+            nearby_func_mutation = global_arg[2]
             time.sleep(0.100)
-        process_number = global_arg[0]
-        instance_count = global_arg[1]
-        max_iteration = global_arg[2]
+        crosing = global_arg[0]
+        hard_mutation = global_arg[1]
+        nearby_func_mutation = global_arg[2]
         global_y[:] = []
         global_queue = queue.Queue()
         proc_lst = []

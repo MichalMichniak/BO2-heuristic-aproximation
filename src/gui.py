@@ -44,9 +44,9 @@ class MainWindow(QtWidgets.QMainWindow):
         # self.graphWidget.setBackground('w')
 
     def update_plot_data(self):
-        self.edit1_label.setText("process number = " + str(global_arg[0]))
-        self.edit2_label.setText("instance_count = " + str(global_arg[1]))
-        self.edit3_label.setText("max iteration = " + str(global_arg[2]))
+        self.edit1_label.setText("crossing = " + str(global_arg[0]))
+        self.edit2_label.setText("hard mutation = " + str(global_arg[1]))
+        self.edit3_label.setText("nearby mutation = " + str(global_arg[2]))
         self.progress_bar.setValue(global_progress[0])
         if len(global_y) > 0:
             self.label.setText("Wartość funkcji celu: \n" + "{:3.2f}".format(global_y[-1]))
@@ -99,7 +99,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def add_edit1(self):
         self.edit1_label = QtWidgets.QLabel()
-        self.edit1_label.setText("process number = " + str(global_arg[0]))
+        self.edit1_label.setText("crossing = " + str(global_arg[0]))
         self.edit1 = QtWidgets.QLineEdit()
         self.edit1.returnPressed.connect(self.edit1_meth)
         self.layout.addWidget(self.edit1, 1, 0)
@@ -107,7 +107,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def add_edit2(self):
         self.edit2_label = QtWidgets.QLabel()
-        self.edit2_label.setText("instance_count = " + str(global_arg[1]))
+        self.edit2_label.setText("hard mutation = " + str(global_arg[1]))
         self.edit2 = QtWidgets.QLineEdit()
         self.edit2.returnPressed.connect(self.edit2_meth)
         self.layout.addWidget(self.edit2, 3, 0)
@@ -115,7 +115,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def add_edit3(self):
         self.edit3_label = QtWidgets.QLabel()
-        self.edit3_label.setText("PLmax iteration = " + str(global_arg[2]))
+        self.edit3_label.setText("nearby mutation = " + str(global_arg[2]))
         self.edit3 = QtWidgets.QLineEdit()
         self.edit3.returnPressed.connect(self.edit3_meth)
         self.layout.addWidget(self.edit3_label, 4, 0)
@@ -125,17 +125,17 @@ class MainWindow(QtWidgets.QMainWindow):
     def edit1_meth(self):
         if not global_rdy_flag[0]:
             if len(self.edit1.text()) > 0:
-                global_arg[0] = int(self.edit1.text())
+                global_arg[0] = float(self.edit1.text())
 
     def edit2_meth(self):
         if not global_rdy_flag[0]:
             if len(self.edit2.text()) > 0:
-                global_arg[1] = int(self.edit2.text())
+                global_arg[1] = float(self.edit2.text())
 
     def edit3_meth(self):
         if not global_rdy_flag[0]:
             if len(self.edit3.text()) > 0:
-                global_arg[2] = int(self.edit3.text())
+                global_arg[2] = float(self.edit3.text())
 
     def set_main_widget(self):
         pass
