@@ -6,6 +6,8 @@ from  copy import deepcopy
 import math
 from typing import List
 import numpy as np
+from src.LUT import LUT
+from src.genetic_operations.nearest_heuristic import heuristic_
 
 class GeneticOperations:
     def __init__(self,asc : ASC, X = [-5,5]) -> None:
@@ -32,7 +34,7 @@ class GeneticOperations:
         ins.set_funct_vect(func_vect)
         return ins
 
-    def gen_oper_over_lst(self, lst, criterial:List[float], crosing = 0.60, hard_mutation = 0.05, nearby_func_mutation = 0.20, arguments_mutation = 0.10, typeofsurviving = "roulette"):
+    def gen_oper_over_lst(self, lst, criterial:List[float], lut : LUT, crosing = 0.60, hard_mutation = 0.05, nearby_func_mutation = 0.20, arguments_mutation = 0.10, typeofsurviving = "roulette", restrictions = True):
         new_population : List[Instance] = []
         
         ### probability of roulette
@@ -130,7 +132,9 @@ class GeneticOperations:
                         new_argument = randint(0,self.asc_.architecture[row-1]-1)
                     new_param.append(new_argument)
                 new_population[i].funct_vect[row][col] = new_param.copy()
-
+        if restrictions:
+            for i in range(len(new_population)):
+                new_population[i] = heuristic_(new_population[i],lut)
         return new_population
 
 def get_idx_binary_search(value,dystrybuanta,a=0,b=None):

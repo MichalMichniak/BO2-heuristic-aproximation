@@ -101,72 +101,6 @@ def get_lst_from_queue_sort(global_queue : queue.Queue,lst_instance : List):
     return lst,lst_values
 
 
-
-def main_process(process_number = 3, instance_count = 100 , max_iteration = 4, crosing = 0.60, hard_mutation = 0.05, nearby_func_mutation = 0.20, arguments_mutation = 0.10):
-    """
-    main function that control subprocesses and contain main program loop
-    """
-    funcs = function_definisions.get_funct()
-    lut = LUT()
-    
-    for i in funcs:
-        lut.add_funct(*i)
-    asc = ASC(lut,140,2,[8,6,4,2,1])
-
-    # maping_dict = {}
-    # ista = asc.generate_instance()
-    global_queue = queue.Queue()
-    proc_lst = []
-    g = GeneticOperations(asc)
-    count_lock = threading.Lock()
-    global_count = Count()
-    for i in range(process_number):
-        proc_lst.append(Process_Package(global_queue, asc.architecture,asc.N,count_lock,global_count))
-    for i in range(process_number):
-        proc_lst[i].run()
-    lst_instance = [asc.generate_instance() for i in range(instance_count)]
-    split_counting(lst_instance,proc_lst)
-
-    for i in range(max_iteration):
-        print(f"iteration : {i}")
-        while global_count.initial_value != process_number:
-            time.sleep(0.1)
-        else:
-            global_count.initial_value = 0
-        lst_instance,func_values = get_lst_from_queue_sort(global_queue,lst_instance)
-        #nwm czy to to, ale tu apendujemy wartości wunkcji celu i updatujamy progress bara
-        global_y.append(func_values[0])
-        #print(global_y)
-        global_progress[0] =int((i+1)/max_iteration * 100)
-        # print(lst_instance)
-        if i < max_iteration - 1:
-            ##################################################
-            """
-            operacje genetyczne na populacji lst_instance
-            TU PISAĆ KOD
-
-            """
-            lst_instance = g.gen_oper_over_lst(lst_instance,func_values,crosing, hard_mutation, nearby_func_mutation, arguments_mutation)
-
-
-            ##################################################
-            split_counting(lst_instance,proc_lst)
-
-    # for i in range(100):
-    #     print(i)
-    #     buffor.put([ista.get_funct_vect(),i])
-    #     buffor.put([ista.get_funct_vect(),i])
-    #     buffor.put([ista.get_funct_vect(),i])
-    # print("bbb")
-
-    # time.sleep(100)
-    # buffor.put([function_definisions.DISCONNECT_MSG, 0])
-    print("######DISCONECTING AND JOINING STAGE##############")
-    for i in proc_lst:
-        i.put(["DISCONECT",0])
-        i.p.join()
-    pass
-
 def main_process_gui(process_number = 3, instance_count = 100 , max_iteration = 4, crosing = 0.60, hard_mutation = 0.05, nearby_func_mutation = 0.20, arguments_mutation = 0.10, typeofsurviving = "fine"):
     """
     main function that control subprocesses and contain main program loop
@@ -235,8 +169,8 @@ def main_process_gui(process_number = 3, instance_count = 100 , max_iteration = 
                 TU PISAĆ KOD
 
                 """
-                lst_instance = g.gen_oper_over_lst(lst_instance, func_values, crosing, hard_mutation,
-                                                   nearby_func_mutation, arguments_mutation, typeofsurviving )
+                lst_instance = g.gen_oper_over_lst(lst_instance, func_values, lut, crosing, hard_mutation,
+                                                   nearby_func_mutation, arguments_mutation, typeofsurviving, True )
 
                 ##################################################
                 split_counting(lst_instance, proc_lst)
