@@ -61,12 +61,21 @@ class GeneticOperations:
                 j+=1
                 idx2 += np.random.randint(j,2+j)%len(criterial)
             new_population.append(self.cross(lst[idx1],lst[idx2]))
+
         if typeofsurviving == "roulette":
             # roulette chosing:
             survivors = []
             for i in range(rest):
                 ### roulette generation
                 survivors.append(lst[get_idx_binary_search(np.random.uniform(),cumultative_distribute_func)%len(criterial)]) 
+            new_population.extend(survivors)
+        elif typeofsurviving == "tournament":
+            survivors = []
+            for i in range(rest):
+                ### tournament generation for set of 5 instances
+                indexes = [np.random.randint(0,len(lst)-1) for i in range(5)]
+                index = min(indexes)
+                survivors.append(lst[index]) 
             new_population.extend(survivors)
         else:
             # best chosing:
