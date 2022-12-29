@@ -101,7 +101,7 @@ def get_lst_from_queue_sort(global_queue : queue.Queue,lst_instance : List):
     return lst,lst_values
 
 
-def main_process_gui(process_number = 3, instance_count = 100 , max_iteration = 4, crosing = 0.60, hard_mutation = 0.05, nearby_func_mutation = 0.20, arguments_mutation = 0.10, typeofsurviving = "fine"):
+def main_process_gui(process_number = 3, instance_count = 100 , max_iteration = 100, crosing = 0.60, hard_mutation = 0.05, nearby_func_mutation = 0.20, arguments_mutation = 0.10, typeofsurviving = "roullete"):
     """
     main function that control subprocesses and contain main program loop
     """
@@ -111,10 +111,10 @@ def main_process_gui(process_number = 3, instance_count = 100 , max_iteration = 
     for i in funcs:
         lut.add_funct(*i)
     asc = ASC(lut, 140, 2, [8, 6, 4, 2, 1])
-
+    restrictions = True
     # maping_dict = {}
     # ista = asc.generate_instance()
-    global_arg[:] = [crosing, hard_mutation, nearby_func_mutation, arguments_mutation, instance_count, typeofsurviving]
+    global_arg[:] = [crosing, hard_mutation, nearby_func_mutation, arguments_mutation, restrictions, typeofsurviving,asc.t_max,asc.architecture]
     gui_process = threading.Thread(target=src.gui.start)
     gui_process.start()
     ## tu ustawiamy parametry algorytmu
@@ -123,19 +123,19 @@ def main_process_gui(process_number = 3, instance_count = 100 , max_iteration = 
             """
             tutaj zmieniane beda parametry algorytmu
             """
-            crosing = global_arg[0]
-            hard_mutation = global_arg[1]
-            nearby_func_mutation = global_arg[2]
-            arguments_mutation = global_arg[3]
-            max_iteration = global_arg[4]
-            typeofsurviving = global_arg[5]
+            if not gui_process.is_alive():
+                break
             time.sleep(0.100)
+        if not gui_process.is_alive():
+            break
         crosing = global_arg[0]
         hard_mutation = global_arg[1]
         nearby_func_mutation = global_arg[2]
         arguments_mutation = global_arg[3]
-        max_iteration = global_arg[4]
+        restrictions = global_arg[4]
         typeofsurviving = global_arg[5]
+        asc.t_max = global_arg[6]
+        asc.architecture = global_arg[7]
         global_y[:] = []
         global_queue = queue.Queue()
         proc_lst = []
@@ -143,6 +143,8 @@ def main_process_gui(process_number = 3, instance_count = 100 , max_iteration = 
         count_lock = threading.Lock()
         global_count = Count()
         for i in range(process_number):
+            if not gui_process.is_alive():
+                break
             proc_lst.append(Process_Package(global_queue, asc.architecture, asc.N, count_lock, global_count))
         for i in range(process_number):
             proc_lst[i].run()
@@ -150,6 +152,8 @@ def main_process_gui(process_number = 3, instance_count = 100 , max_iteration = 
         split_counting(lst_instance, proc_lst)
 
         for i in range(max_iteration):
+            if not gui_process.is_alive():
+                break
             print(f"iteration : {i}")
             while global_count.initial_value != process_number:
                 time.sleep(0.1)
@@ -159,6 +163,7 @@ def main_process_gui(process_number = 3, instance_count = 100 , max_iteration = 
             #print(func_values)
             # nwm czy to to, ale tu apendujemy wartości wunkcji celu i updatujamy progress bara
             global_y.append(func_values[0])
+            print(func_values)
             #print(global_y)
             global_progress[0] = int((i + 1) / max_iteration * 100)
             # print(lst_instance)
@@ -170,7 +175,7 @@ def main_process_gui(process_number = 3, instance_count = 100 , max_iteration = 
 
                 """
                 lst_instance = g.gen_oper_over_lst(lst_instance, func_values, lut, crosing, hard_mutation,
-                                                   nearby_func_mutation, arguments_mutation, typeofsurviving, True )
+                                                   nearby_func_mutation, arguments_mutation, typeofsurviving, restrictions )
 
                 ##################################################
                 split_counting(lst_instance, proc_lst)

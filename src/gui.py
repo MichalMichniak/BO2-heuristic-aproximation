@@ -28,6 +28,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def __init__(self, *args, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
+        self.best_y = 300000000
+        self.label = None
         self.layout = QtWidgets.QGridLayout()
         self.set_window()
         self.add_label()
@@ -40,6 +42,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.add_edit4()
         self.add_edit5()
         self.add_edit6()
+        self.add_edit7()
+        self.add_edit8()
         self.setLayout(self.layout)
         widget = QtWidgets.QWidget()
         widget.setLayout(self.layout)
@@ -51,31 +55,43 @@ class MainWindow(QtWidgets.QMainWindow):
         self.edit2_label.setText("hard mutation = " + str(global_arg[1]))
         self.edit3_label.setText("nearby mutation = " + str(global_arg[2]))
         self.edit4_label.setText("argument mutation = " + str(global_arg[3]))
-        self.edit5_label.setText("max iteration = " + str(global_arg[4]))
-        self.edit6_label.setText(str(global_arg[5]))
+        self.edit5_label.setText("Restrictions = " + str(global_arg[4]))
+        self.edit6_label.setText("Type of surviving: \n" + str(global_arg[5]))
+        self.edit7_label.setText("T_max: \n" + str(global_arg[6]))
+        self.edit8_label.setText("Architecture: \n" + str(global_arg[7]))
         self.progress_bar.setValue(global_progress[0])
         if len(global_y) > 0:
-            self.label.setText("Wartość funkcji celu: \n" + "{:3.2f}".format(global_y[-1]))
+            self.label.setText("Aktualna wartość: \n" + "{:3.2f}".format(global_y[-1]))
+            self.best_y = min(self.best_y, global_y[-1])
+            self.label_best.setText("Najlepsza wartość: \n" + "{:3.2f}".format(self.best_y))
         self.data_line.setData([i for i in range(len(global_y))], global_y)  # Update the data.
+        # print(global_y)
 
     def set_window(self):
-        self.setWindowTitle("Funkcja celu")
+        self.setWindowTitle("Heuristic Aproximation")
         self.setMaximumWidth(2000)
         self.setMinimumWidth(400)
         self.setMaximumHeight(2000)
         self.setMinimumHeight(400)
 
     def add_label(self):
-        self.label = QtWidgets.QLabel("Wartość funkcji celu: \n ------")
+        self.label = QtWidgets.QLabel("Aktualna wartość: \n ------")
         self.label.setFont(self.label.font())
         font = self.label.font()
-        font.setPointSize(17)
+        font.setPointSize(13)
         self.label.setFont(font)
-        self.layout.addWidget(self.label, 7, 0,1,2)
+        self.layout.addWidget(self.label, 9, 0, 1, 1)
+
+        self.label_best = QtWidgets.QLabel("Najlepsza wartość: \n ------")
+        self.label_best.setFont(self.label.font())
+        font = self.label_best.font()
+        font.setPointSize(13)
+        self.label_best.setFont(font)
+        self.layout.addWidget(self.label_best, 9, 1, 1, 1)
 
     def add_progress_bar(self):
         self.progress_bar = QtWidgets.QProgressBar()
-        self.layout.addWidget(self.progress_bar, 9, 2)
+        self.layout.addWidget(self.progress_bar, 11, 2)
 
     def add_plot(self):
         self.graphWidget = pg.PlotWidget()
@@ -87,14 +103,14 @@ class MainWindow(QtWidgets.QMainWindow):
         self.timer.setInterval(200)
         self.timer.timeout.connect(self.update_plot_data)
         self.timer.start()
-        self.layout.addWidget(self.graphWidget, 0, 2, 8, 1)
+        self.layout.addWidget(self.graphWidget, 0, 2, 10, 1)
 
     def add_start(self):
         self.push_button = QtWidgets.QPushButton()
         self.push_button.setFont(QtGui.QFont("Times", 20))
         self.push_button.setText("Start")
         self.push_button.clicked.connect(self.start_butt)
-        self.layout.addWidget(self.push_button, 6, 0, 1, 2)
+        self.layout.addWidget(self.push_button, 10, 0, 1, 2)
 
     def start_butt(self):
         if not global_rdy_flag[0]:
@@ -130,6 +146,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.edit3.returnPressed.connect(self.edit3_meth)
         self.layout.addWidget(self.edit3_label, 4, 0)
         self.layout.addWidget(self.edit3, 5, 0)
+
     def add_edit4(self):
         self.edit4_label = QtWidgets.QLabel()
         self.edit4_label.setText("argument mutation = " + str(global_arg[3]))
@@ -140,9 +157,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def add_edit5(self):
         self.edit5_label = QtWidgets.QLabel()
-        self.edit5_label.setText("max iteration = " + str(global_arg[4]))
-        self.edit5 = QtWidgets.QLineEdit()
-        self.edit5.returnPressed.connect(self.edit5_meth)
+        self.edit5_label.setText("Restrictions = " + str(global_arg[4]))
+        self.edit5 = QtWidgets.QComboBox()
+        self.edit5.addItem("True")
+        self.edit5.addItem("False")
+        self.edit5.activated.connect(self.edit5_meth)
         self.layout.addWidget(self.edit5, 3, 1)
         self.layout.addWidget(self.edit5_label, 2, 1)
 
@@ -151,39 +170,121 @@ class MainWindow(QtWidgets.QMainWindow):
         self.edit6_label.setText("PLACEHOLDER")
         self.edit6 = QtWidgets.QComboBox()
         self.edit6.addItem("roulette")
-        self.edit6.addItem("else")
+        self.edit6.addItem("best surviving")
         self.edit6.activated.connect(self.edit6_meth)
         self.layout.addWidget(self.edit6_label, 4, 1)
         self.layout.addWidget(self.edit6, 5, 1)
 
+    def add_edit7(self):
+        self.edit7_label = QtWidgets.QLabel()
+        self.edit7_label.setText("T_max = " + str(global_arg[6]))
+        self.edit7 = QtWidgets.QLineEdit()
+        self.edit7.returnPressed.connect(self.edit7_meth)
+        self.layout.addWidget(self.edit7_label, 6, 1)
+        self.layout.addWidget(self.edit7, 7, 1)
+
+    def add_edit8(self):
+        self.edit8_label = QtWidgets.QLabel()
+        self.edit8_label.setText("Architecture = " + str(global_arg[7]))
+        self.edit8 = QtWidgets.QLineEdit()
+        self.edit8.returnPressed.connect(self.edit8_meth)
+        self.layout.addWidget(self.edit8_label, 6, 0)
+        self.layout.addWidget(self.edit8, 7, 0)
+
     def edit1_meth(self):
         if not global_rdy_flag[0]:
             if len(self.edit1.text()) > 0:
-                global_arg[0] = float(self.edit1.text())
+                try:
+                    argg = float(self.edit1.text())
+                    if argg < 0: argg = 0.0
+                    if argg > 1: argg = 1.0
+                    global_arg[0] = argg
+                except ValueError:
+                    msg = QtWidgets.QMessageBox()
+                    msg.setWindowTitle("ERROR")
+                    msg.setText("Must be number from 0 to 1")
+                    x = msg.exec_()
 
     def edit2_meth(self):
         if not global_rdy_flag[0]:
             if len(self.edit2.text()) > 0:
-                global_arg[1] = float(self.edit2.text())
+                try:
+                    argg = float(self.edit2.text())
+                    if argg < 0: argg = 0.0
+                    if argg > 1: argg = 1.0
+                    global_arg[1] = argg
+                except ValueError:
+                    msg = QtWidgets.QMessageBox()
+                    msg.setWindowTitle("ERROR")
+                    msg.setText("Must be number from 0 to 1")
+                    x = msg.exec_()
 
     def edit3_meth(self):
         if not global_rdy_flag[0]:
             if len(self.edit3.text()) > 0:
-                global_arg[2] = float(self.edit3.text())
+                try:
+                    argg = float(self.edit3.text())
+                    if argg < 0: argg = 0.0
+                    if argg > 1: argg = 1.0
+                    global_arg[2] = argg
+                except ValueError:
+                    msg = QtWidgets.QMessageBox()
+                    msg.setWindowTitle("ERROR")
+                    msg.setText("Must be number from 0 to 1")
+                    x = msg.exec_()
+
     def edit4_meth(self):
         if not global_rdy_flag[0]:
             if len(self.edit4.text()) > 0:
-                global_arg[3] = float(self.edit4.text())
+                try:
+                    argg = float(self.edit4.text())
+                    if argg < 0: argg = 0.0
+                    if argg > 1: argg = 1.0
+                    global_arg[3] = float(argg)
+                except ValueError:
+                    msg = QtWidgets.QMessageBox()
+                    msg.setWindowTitle("ERROR")
+                    msg.setText("Must be number from 0 to 1")
+                    x = msg.exec_()
 
     def edit5_meth(self):
         if not global_rdy_flag[0]:
-            if len(self.edit5.text()) > 0:
-                global_arg[4] = int(self.edit5.text())
+            if self.edit5.currentText() == "True":
+                global_arg[4] = True
+            else:
+                global_arg[4] = False
 
     def edit6_meth(self):
         if not global_rdy_flag[0]:
             global_arg[5] = self.edit6.currentText()
 
+    def edit7_meth(self):
+        if not global_rdy_flag[0]:
+            if len(self.edit7.text()) > 0:
+                try:
+                    argg = float(self.edit7.text())
+                    if argg < 0: argg = 0.0
+                    global_arg[6] = float(argg)
+                except ValueError:
+                    msg = QtWidgets.QMessageBox()
+                    msg.setWindowTitle("ERROR")
+                    msg.setText("Must be number")
+                    x = msg.exec_()
+
+    def edit8_meth(self):
+        if len(self.edit8.text()) > 0:
+            try:
+                arg_lst = []
+                argg = self.edit8.text().split(" ")
+                print(argg)
+                for i in range(len(argg)):
+                    arg_lst.append(int(argg[i]))
+                global_arg[7] = arg_lst
+            except:
+                msg = QtWidgets.QMessageBox()
+                msg.setWindowTitle("ERROR")
+                msg.setText("Must be list of integers greater than 0 and separated by space")
+                x = msg.exec_()
     def set_main_widget(self):
         pass
 
