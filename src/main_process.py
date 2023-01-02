@@ -10,7 +10,7 @@ else:
     from src.slave_process import slave_process
     from src.genetic_operations.GeneticOperations_vol2 import GeneticOperations
 
-from src.gui import global_y, global_progress, global_rdy_flag, global_arg, global_exit
+from src.gui import global_y, global_progress, global_rdy_flag, global_arg, global_exit, global_population, global_no_threads
 import threading
 import queue
 import time
@@ -115,6 +115,8 @@ def main_process_gui(process_number = 3, instance_count = 100 , max_iteration = 
     # maping_dict = {}
     # ista = asc.generate_instance()
     global_arg[:] = [crosing, hard_mutation, nearby_func_mutation, arguments_mutation, restrictions, typeofsurviving,asc.t_max,asc.architecture]
+    global_no_threads[0] = process_number
+    global_population[0] = instance_count
     gui_process = threading.Thread(target=src.gui.start)
     gui_process.start()
     ## tu ustawiamy parametry algorytmu
@@ -136,6 +138,8 @@ def main_process_gui(process_number = 3, instance_count = 100 , max_iteration = 
         typeofsurviving = global_arg[5]
         asc.t_max = global_arg[6]
         asc.architecture = global_arg[7]
+        process_number = global_no_threads[0]
+        instance_count = global_population[0]
         global_y[:] = []
         global_queue = queue.Queue()
         proc_lst = []

@@ -17,6 +17,8 @@ global_rdy_flag = [0]
 global_edit_1 = ["ds"]
 global_arg = [50, 100, 50]
 global_exit = [0]
+global_no_threads = [0]
+global_population = [0]
 
 class PlotData:
     def __init__(self, data):
@@ -44,6 +46,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.add_edit6()
         self.add_edit7()
         self.add_edit8()
+        self.add_edit9()
+        self.add_edit10()
         self.setLayout(self.layout)
         widget = QtWidgets.QWidget()
         widget.setLayout(self.layout)
@@ -59,6 +63,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.edit6_label.setText("Type of surviving: \n" + str(global_arg[5]))
         self.edit7_label.setText("T_max: \n" + str(global_arg[6]))
         self.edit8_label.setText("Architecture: \n" + str(global_arg[7]))
+        self.edit9_label.setText("Population: " + str(global_population[0]))
+        self.edit10_label.setText("Number of threads: " + str(global_no_threads[0]))
         self.progress_bar.setValue(global_progress[0])
         if len(global_y) > 0:
             self.label.setText("Aktualna wartość: \n" + "{:3.2f}".format(global_y[-1]))
@@ -80,14 +86,14 @@ class MainWindow(QtWidgets.QMainWindow):
         font = self.label.font()
         font.setPointSize(13)
         self.label.setFont(font)
-        self.layout.addWidget(self.label, 9, 0, 1, 1)
+        self.layout.addWidget(self.label, 10, 0, 1, 1)
 
         self.label_best = QtWidgets.QLabel("Najlepsza wartość: \n ------")
         self.label_best.setFont(self.label.font())
         font = self.label_best.font()
         font.setPointSize(13)
         self.label_best.setFont(font)
-        self.layout.addWidget(self.label_best, 9, 1, 1, 1)
+        self.layout.addWidget(self.label_best, 10, 1, 1, 1)
 
     def add_progress_bar(self):
         self.progress_bar = QtWidgets.QProgressBar()
@@ -110,7 +116,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.push_button.setFont(QtGui.QFont("Times", 20))
         self.push_button.setText("Start")
         self.push_button.clicked.connect(self.start_butt)
-        self.layout.addWidget(self.push_button, 10, 0, 1, 2)
+        self.layout.addWidget(self.push_button, 11, 0, 1, 2)
 
     def start_butt(self):
         if not global_rdy_flag[0]:
@@ -125,6 +131,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def add_edit1(self):
         self.edit1_label = QtWidgets.QLabel()
+        self.edit1_label.setFont(QtGui.QFont("Times", 13))
         self.edit1_label.setText("crossing = " + str(global_arg[0]))
         self.edit1 = QtWidgets.QLineEdit()
         self.edit1.returnPressed.connect(self.edit1_meth)
@@ -133,6 +140,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def add_edit2(self):
         self.edit2_label = QtWidgets.QLabel()
+        self.edit2_label.setFont(QtGui.QFont("Times", 13))
         self.edit2_label.setText("hard mutation = " + str(global_arg[1]))
         self.edit2 = QtWidgets.QLineEdit()
         self.edit2.returnPressed.connect(self.edit2_meth)
@@ -141,6 +149,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def add_edit3(self):
         self.edit3_label = QtWidgets.QLabel()
+        self.edit3_label.setFont(QtGui.QFont("Times", 13))
         self.edit3_label.setText("nearby mutation = " + str(global_arg[2]))
         self.edit3 = QtWidgets.QLineEdit()
         self.edit3.returnPressed.connect(self.edit3_meth)
@@ -149,6 +158,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def add_edit4(self):
         self.edit4_label = QtWidgets.QLabel()
+        self.edit4_label.setFont(QtGui.QFont("Times", 13))
         self.edit4_label.setText("argument mutation = " + str(global_arg[3]))
         self.edit4 = QtWidgets.QLineEdit()
         self.edit4.returnPressed.connect(self.edit4_meth)
@@ -157,6 +167,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def add_edit5(self):
         self.edit5_label = QtWidgets.QLabel()
+        self.edit5_label.setFont(QtGui.QFont("Times", 13))
         self.edit5_label.setText("Restrictions = " + str(global_arg[4]))
         self.edit5 = QtWidgets.QComboBox()
         self.edit5.addItem("True")
@@ -167,6 +178,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def add_edit6(self):
         self.edit6_label = QtWidgets.QLabel()
+        self.edit6_label.setFont(QtGui.QFont("Times", 13))
         self.edit6_label.setText("PLACEHOLDER")
         self.edit6 = QtWidgets.QComboBox()
         self.edit6.addItem("roulette")
@@ -177,6 +189,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def add_edit7(self):
         self.edit7_label = QtWidgets.QLabel()
+        self.edit7_label.setFont(QtGui.QFont("Times", 13))
         self.edit7_label.setText("T_max = " + str(global_arg[6]))
         self.edit7 = QtWidgets.QLineEdit()
         self.edit7.returnPressed.connect(self.edit7_meth)
@@ -185,11 +198,29 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def add_edit8(self):
         self.edit8_label = QtWidgets.QLabel()
+        self.edit8_label.setFont(QtGui.QFont("Times", 13))
         self.edit8_label.setText("Architecture = " + str(global_arg[7]))
         self.edit8 = QtWidgets.QLineEdit()
         self.edit8.returnPressed.connect(self.edit8_meth)
         self.layout.addWidget(self.edit8_label, 6, 0)
         self.layout.addWidget(self.edit8, 7, 0)
+
+    def add_edit9(self):
+        self.edit9_label = QtWidgets.QLabel()
+        self.edit9_label.setFont(QtGui.QFont("Times", 13))
+        self.edit9_label.setText("Population = ")
+        self.layout.addWidget(self.edit9_label, 8, 0)
+        self.edit9 = QtWidgets.QLineEdit()
+        self.edit9.returnPressed.connect(self.edit9_meth)
+        self.layout.addWidget(self.edit9, 9, 0)
+    def add_edit10(self):
+        self.edit10_label = QtWidgets.QLabel()
+        self.edit10_label.setFont(QtGui.QFont("Times", 13))
+        self.edit10_label.setText("Number of threads = ")
+        self.layout.addWidget(self.edit10_label, 8, 1)
+        self.edit10 = QtWidgets.QLineEdit()
+        self.edit10.returnPressed.connect(self.edit10_meth)
+        self.layout.addWidget(self.edit10, 9, 1)
 
     def edit1_meth(self):
         if not global_rdy_flag[0]:
@@ -285,6 +316,34 @@ class MainWindow(QtWidgets.QMainWindow):
                 msg.setWindowTitle("ERROR")
                 msg.setText("Must be list of integers greater than 0 and separated by space")
                 x = msg.exec_()
+
+    def edit9_meth(self):
+        if not global_rdy_flag[0]:
+            if len(self.edit9.text()) > 0:
+                try:
+                    argg = int(self.edit9.text())
+                    if argg < 1: argg = 1
+                    if argg > 1000: argg = 1000
+                    global_population[0] = argg
+                except ValueError:
+                    msg = QtWidgets.QMessageBox()
+                    msg.setWindowTitle("ERROR")
+                    msg.setText("Must be integer greater than 0")
+                    x = msg.exec_()
+
+    def edit10_meth(self):
+        if not global_rdy_flag[0]:
+            if len(self.edit10.text()) > 0:
+                try:
+                    argg = int(self.edit10.text())
+                    if argg < 1: argg = 1
+                    if argg > 200: argg = 200
+                    global_no_threads[0] = argg
+                except ValueError:
+                    msg = QtWidgets.QMessageBox()
+                    msg.setWindowTitle("ERROR")
+                    msg.setText("Must be integer greater than 0")
+                    x = msg.exec_()
     def set_main_widget(self):
         pass
 
