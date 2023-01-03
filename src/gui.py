@@ -19,6 +19,7 @@ global_arg = [50, 100, 50]
 global_exit = [0]
 global_no_threads = [0]
 global_population = [0]
+global_maxit = [0]
 
 class PlotData:
     def __init__(self, data):
@@ -48,6 +49,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.add_edit8()
         self.add_edit9()
         self.add_edit10()
+        self.add_edit11()
         self.setLayout(self.layout)
         widget = QtWidgets.QWidget()
         widget.setLayout(self.layout)
@@ -65,6 +67,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.edit8_label.setText("Architecture: \n" + str(global_arg[7]))
         self.edit9_label.setText("Population: " + str(global_population[0]))
         self.edit10_label.setText("Number of threads: " + str(global_no_threads[0]))
+        self.edit11_label.setText("Max no iterations: " + str(global_maxit[0]))
         self.progress_bar.setValue(global_progress[0])
         if len(global_y) > 0:
             self.label.setText("Aktualna wartość: \n" + "{:3.2f}".format(global_y[-1]))
@@ -86,14 +89,14 @@ class MainWindow(QtWidgets.QMainWindow):
         font = self.label.font()
         font.setPointSize(13)
         self.label.setFont(font)
-        self.layout.addWidget(self.label, 10, 0, 1, 1)
+        self.layout.addWidget(self.label, 12, 0, 1, 1)
 
         self.label_best = QtWidgets.QLabel("Najlepsza wartość: \n ------")
         self.label_best.setFont(self.label.font())
         font = self.label_best.font()
         font.setPointSize(13)
         self.label_best.setFont(font)
-        self.layout.addWidget(self.label_best, 10, 1, 1, 1)
+        self.layout.addWidget(self.label_best, 12, 1, 1, 1)
 
     def add_progress_bar(self):
         self.progress_bar = QtWidgets.QProgressBar()
@@ -116,7 +119,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.push_button.setFont(QtGui.QFont("Times", 20))
         self.push_button.setText("Start")
         self.push_button.clicked.connect(self.start_butt)
-        self.layout.addWidget(self.push_button, 11, 0, 1, 2)
+        self.layout.addWidget(self.push_button, 13, 0, 1, 2)
 
     def start_butt(self):
         if not global_rdy_flag[0]:
@@ -210,19 +213,27 @@ class MainWindow(QtWidgets.QMainWindow):
         self.edit9_label = QtWidgets.QLabel()
         self.edit9_label.setFont(QtGui.QFont("Times", 13))
         self.edit9_label.setText("Population = ")
-        self.layout.addWidget(self.edit9_label, 8, 0)
+        self.layout.addWidget(self.edit9_label, 10, 0)
         self.edit9 = QtWidgets.QLineEdit()
         self.edit9.returnPressed.connect(self.edit9_meth)
-        self.layout.addWidget(self.edit9, 9, 0)
+        self.layout.addWidget(self.edit9, 11, 0)
     def add_edit10(self):
         self.edit10_label = QtWidgets.QLabel()
         self.edit10_label.setFont(QtGui.QFont("Times", 13))
         self.edit10_label.setText("Number of processes = ")
-        self.layout.addWidget(self.edit10_label, 8, 1)
+        self.layout.addWidget(self.edit10_label, 10, 1)
         self.edit10 = QtWidgets.QLineEdit()
         self.edit10.returnPressed.connect(self.edit10_meth)
-        self.layout.addWidget(self.edit10, 9, 1)
+        self.layout.addWidget(self.edit10, 11, 1)
 
+    def add_edit11(self):
+        self.edit11_label = QtWidgets.QLabel()
+        self.edit11_label.setFont(QtGui.QFont("Times", 13))
+        self.edit11_label.setText("Max number of iterations = " + str(global_maxit[0]))
+        self.edit11 = QtWidgets.QLineEdit()
+        self.edit11.returnPressed.connect(self.edit11_meth)
+        self.layout.addWidget(self.edit11_label, 8, 0)
+        self.layout.addWidget(self.edit11, 9, 0)
     def edit1_meth(self):
         if not global_rdy_flag[0]:
             if len(self.edit1.text()) > 0:
@@ -340,6 +351,20 @@ class MainWindow(QtWidgets.QMainWindow):
                     if argg < 1: argg = 1
                     if argg > 200: argg = 200
                     global_no_threads[0] = argg
+                except ValueError:
+                    msg = QtWidgets.QMessageBox()
+                    msg.setWindowTitle("ERROR")
+                    msg.setText("Must be integer greater than 0")
+                    x = msg.exec_()
+
+    def edit11_meth(self):
+        if not global_rdy_flag[0]:
+            if len(self.edit11.text()) > 0:
+                try:
+                    argg = int(self.edit11.text())
+                    if argg < 1: argg = 1
+                    if argg > 1000: argg = 1000
+                    global_maxit[0] = argg
                 except ValueError:
                     msg = QtWidgets.QMessageBox()
                     msg.setWindowTitle("ERROR")
