@@ -216,7 +216,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def add_edit10(self):
         self.edit10_label = QtWidgets.QLabel()
         self.edit10_label.setFont(QtGui.QFont("Times", 13))
-        self.edit10_label.setText("Number of threads = ")
+        self.edit10_label.setText("Number of processes = ")
         self.layout.addWidget(self.edit10_label, 8, 1)
         self.edit10 = QtWidgets.QLineEdit()
         self.edit10.returnPressed.connect(self.edit10_meth)
