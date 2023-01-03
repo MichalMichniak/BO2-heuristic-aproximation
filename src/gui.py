@@ -183,6 +183,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.edit6 = QtWidgets.QComboBox()
         self.edit6.addItem("roulette")
         self.edit6.addItem("best surviving")
+        self.edit6.addItem("tournament")
         self.edit6.activated.connect(self.edit6_meth)
         self.layout.addWidget(self.edit6_label, 4, 1)
         self.layout.addWidget(self.edit6, 5, 1)
