@@ -57,10 +57,10 @@ class MainWindow(QtWidgets.QMainWindow):
         # self.graphWidget.setBackground('w')
 
     def update_plot_data(self):
-        self.edit1_label.setText("crossing = " + str(global_arg[0]))
-        self.edit2_label.setText("hard mutation = " + str(global_arg[1]))
-        self.edit3_label.setText("nearby mutation = " + str(global_arg[2]))
-        self.edit4_label.setText("argument mutation = " + str(global_arg[3]))
+        self.edit1_label.setText("Crossing = " + str(global_arg[0]))
+        self.edit2_label.setText("Hard mutation = " + str(global_arg[1]))
+        self.edit3_label.setText("Nearby mutation = " + str(global_arg[2]))
+        self.edit4_label.setText("Argument mutation = " + str(global_arg[3]))
         self.edit5_label.setText("Restrictions = " + str(global_arg[4]))
         self.edit6_label.setText("Type of surviving: \n" + str(global_arg[5]))
         self.edit7_label.setText("T_max: \n" + str(global_arg[6]))
@@ -70,9 +70,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.edit11_label.setText("Max no iterations: " + str(global_maxit[0]))
         self.progress_bar.setValue(global_progress[0])
         if len(global_y) > 0:
-            self.label.setText("Aktualna wartość: \n" + "{:3.2f}".format(global_y[-1]))
+            self.label.setText("Current value: \n" + "{:3.2f}".format(global_y[-1]))
             self.best_y = min(self.best_y, global_y[-1])
-            self.label_best.setText("Najlepsza wartość: \n" + "{:3.2f}".format(self.best_y))
+            self.label_best.setText("Best value: \n" + "{:3.2f}".format(self.best_y))
         self.data_line.setData([i for i in range(len(global_y))], global_y)  # Update the data.
         # print(global_y)
 
@@ -84,14 +84,14 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setMinimumHeight(400)
 
     def add_label(self):
-        self.label = QtWidgets.QLabel("Aktualna wartość: \n ------")
+        self.label = QtWidgets.QLabel("Current value: \n ------")
         self.label.setFont(self.label.font())
         font = self.label.font()
         font.setPointSize(13)
         self.label.setFont(font)
         self.layout.addWidget(self.label, 12, 0, 1, 1)
 
-        self.label_best = QtWidgets.QLabel("Najlepsza wartość: \n ------")
+        self.label_best = QtWidgets.QLabel("Best value: \n ------")
         self.label_best.setFont(self.label.font())
         font = self.label_best.font()
         font.setPointSize(13)
