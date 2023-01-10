@@ -31,6 +31,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def __init__(self, *args, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
+        self.setWindowIcon(QtGui.QIcon("icon.png"))
         self.best_y = 300000000
         self.label = None
         self.layout = QtWidgets.QGridLayout()
@@ -108,6 +109,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.y = [0]
         pen = pg.mkPen(color=(255, 0, 0))
         self.data_line = self.graphWidget.plot(self.x, self.y, pen=pen)
+        styles = {'color': 'white', 'font-size': '15px'}
+        self.graphWidget.setLabel('left', 'value', **styles)
+        self.graphWidget.setLabel('bottom', 'iteration', **styles)
         self.timer = QtCore.QTimer()
         self.timer.setInterval(200)
         self.timer.timeout.connect(self.update_plot_data)
